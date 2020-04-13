@@ -1,12 +1,12 @@
-import axios from 'axios'
+import axios from '../http.js'
 
-const getCode = async () => {
-  let result = await axios.get('/demo')
-  if(result.status == 200){
-    return result.data.data
-  }
+const getCode = (sid) => {
+    return axios.get('/public/getCode',{ params:{sid: sid} })
 }
+const login =  (userInfo) =>  axios.post('/login',{...userInfo})
+
 
 export {
-  getCode
+  getCode,
+  login
 }
