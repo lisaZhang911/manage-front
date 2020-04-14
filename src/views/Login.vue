@@ -18,10 +18,10 @@
                   <form method="post" @submit.prevent="validate(submit)">
                     <ValidationProvider name="name" rules="required" v-slot="{errors}">
                       <div class="layui-form-item">
-                        <label for="L_email" class="layui-form-label">用户名</label>
+                        <label for="L_email" class="layui-form-label">账号</label>
                         <div class="layui-input-block">
                           <input
-                          v-model="name"
+                          v-model="email"
                           type="text"
                           id="L_email"
                           name="name"
@@ -100,7 +100,7 @@ export default {
   },
   data(){
     return {
-      name:'',
+      email:'',
       password:'',
       code:'',
       svg:''
@@ -117,7 +117,7 @@ export default {
         return
       }
       login({
-        username: this.name,
+        email: this.email,
         password: this.password,
         code: this.code,
         sid: this.$store.state.sid

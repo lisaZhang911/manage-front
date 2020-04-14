@@ -73,11 +73,6 @@
                     <a href="" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-qq" title="QQ登入"></a>
                     <a href="" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-weibo" title="微博登入"></a>
                   </div>
-                  <input v-validate="'required'" name="password" type="password" placeholder="Password" ref="password1">
-<span v-show="errors.has('password')" class="help is-danger">{{ errors.first('password') }}</span>
-
-<input v-validate="'required|confirmed:password'" name="password_confirmation" type="password" placeholder="Password, Again">
-<span v-show="errors.has('password_confirmation')" class="help is-danger">{{ errors.first('password_confirmation') }}</span>
                 </form>
               </ValidationObserver>
               </div>
@@ -115,9 +110,7 @@ export default {
       getCode(sid).then(r => {this.svg = r.data})
     },
     async submit(){
-      console.log(isValid);
       const isValid = await this.$refs.observer.validate()
-      console.log(isValid);
       if(!isValid){
         return
       }
@@ -127,6 +120,15 @@ export default {
         password: this.password,
         code: this.code,
         sid: this.$store.state.sid
+      }).then(r => {
+        if(r.code==200 && r.errorMsg=='' ){
+          this.$alert('注册成功')
+          setTimeout(() => {
+            this.$router.replace('/login')
+          },1500)
+        } else {
+          this.$alert(r.msg)
+        }
       })
     }
   },
