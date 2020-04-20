@@ -2,7 +2,7 @@
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md8">
       <SetTop></SetTop>
-      <PanelSearch></PanelSearch>
+      <PanelSearch :listData="lists" @getMore="getMore_article"></PanelSearch>
     </div>
 
     <div class="layui-col-md4">
@@ -23,6 +23,7 @@ import Sign from './components/sign.vue'
 import WeekBoard from './components/week_board.vue'
 import Adver from './components/adv.vue'
 import LinkShare from './components/link.vue'
+import { getList } from '../../service/articleService.js'
 
 export default {
   name: "",
@@ -35,9 +36,33 @@ export default {
     Adver,
     LinkShare
   },
-  data: () => ({
-
-  })
+  data(){
+    return {
+      page:1,
+      lists:[]
+    }
+  },
+  methods:{
+    getMore_article(){
+      this.page+=1
+      getList({
+        type:0,
+        page:this.page,
+        catalog:'index'
+      }).then(r => {
+          this.lists = r
+      })
+    }
+  },
+  mounted(){
+    getList({
+      type:0,
+      page:this.page,
+      catalog:'index'
+    }).then(r => {
+        this.lists = r
+    })
+  }
 }
 </script>
 
