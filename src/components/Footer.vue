@@ -1,6 +1,6 @@
 <template lang="html">
-  <div class="">
-    foot
+  <div class="fly-footer">
+    <p><a target="_blank">@XXXXX版权所有</a></p>
   </div>
 </template>
 

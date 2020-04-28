@@ -1,7 +1,7 @@
 import axios from '../http.js'
 import qs from 'qs'
 
-const getList = (options) => axios.get('/public/getList?'+qs.stringify(options))
+const getList = (options) => axios.get('/public/listChannel?'+qs.stringify(options))
 
 //温馨提醒
 const getTips = () => axios.get('/public/tips')

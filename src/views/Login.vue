@@ -122,9 +122,11 @@ export default {
         code: this.code,
         sid: this.$store.state.sid
       }).then(r => {
-        console.log(r);
          if(r.code == 200){
-           console.log(r);
+           this.$store.commit('set_login_state',true)
+           this.$store.commit('set_userInfo',r.data.user)
+           this.$store.commit('set_token',r.data.token)
+           this.$router.replace('/home')
          } else if(r.response.data.code ==500){
            this.$alert('密码或用户名错误')
          } else if(r.response.data.code==401){

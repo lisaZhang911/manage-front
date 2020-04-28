@@ -1,19 +1,19 @@
 <template>
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md8">
-      <SetTop></SetTop>
+      <PanelSearch></PanelSearch>
     </div>
 
   </div>
 </template>
 
 <script>
-import SetTop from './components/setTop.vue'
+import PanelSearch from './components/Panel_search.vue'
 
 export default {
   name: "",
   components: {
-    SetTop
+    PanelSearch
   },
   data: () => ({
 
@@ -22,4 +22,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.layui-col-md8{
+  width:100%
+}
 </style>
