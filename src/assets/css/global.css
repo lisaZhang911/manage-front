@@ -439,11 +439,11 @@ body .fly-user-main{position: relative; min-height: 600px;}
 .mine-msg li .layui-elem-quote p[download]{padding: 10px 0 5px;}
 
 /* 设置 */
-.avatar-add{position:relative; width:373px; height:373px; background-color:#F2F2F5;}
-.avatar-add .upload-img{position:absolute; left:50%; top:35px; margin:0 0 0 -56px;}
-.avatar-add img{position:absolute; left:50%; top:50%; width:168px; height:168px; margin:-50px 0 0 -84px; border-radius:100%;}
-.avatar-add .loading{display:none; position:absolute; width:100%; height:100%; left:0; top:0; padding: 0; background-color:#000; opacity:0.5; filter: Alpha(opacity=50);}
-.avatar-add p{position:absolute; top:70px; width:100%; margin-top: 10px;; font-size:12px; text-align:center; color:#999;}
+.avatar-add{width:200px; height:200px;margin:70px 0 0 95px}
+.avatar-add .upload-img{ display: block; margin-top: 20px}
+.avatar-add img{ display: inline-block;width:84px; height:84px;  border-radius:100%;}
+.avatar-add .loading{display:none;  width:100%; height:100%; left:0; top:0; padding: 0; background-color:#000; opacity:0.5; filter: Alpha(opacity=50);}
+.avatar-add p{ top:70px; width:100%; margin-top: 10px;; font-size:12px;color:#999;}
 .app-bind li{margin-bottom:10px; line-height:30px; color:#999;}
 .app-bind li .iconfont{position: relative; top: 3px; margin-right: 5px; font-size:28px; }
 .app-bind .app-havebind{color:#333;}

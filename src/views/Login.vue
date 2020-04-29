@@ -126,6 +126,8 @@ export default {
            this.$store.commit('set_login_state',true)
            this.$store.commit('set_userInfo',r.data.user)
            this.$store.commit('set_token',r.data.token)
+           localStorage.setItem('token',r.data.token)
+           localStorage.setItem('userInfo',JSON.stringify(r.data.user))
            this.$router.replace('/home')
          } else if(r.response.data.code ==500){
            this.$alert('密码或用户名错误')

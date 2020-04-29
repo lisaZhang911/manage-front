@@ -44,11 +44,11 @@
             <img :src="'http://localhost:3000'+user_info.avar">
           </a>
           <dl class="layui-nav-child layui-anim layui-anim-upbit" :class="{showMenu:isMenu}" >
-            <dd><a href="user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-            <dd><a href="user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-            <dd><a href="user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+            <dd><a @click="goPersonal_page('setting')"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+            <dd><a @click="goPersonal_page('msg')"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+            <dd><a @click="goPersonal_page('home')"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
             <hr style="margin: 5px 0;">
-            <dd><a href="/user/logout/" style="text-align: center;">退出</a></dd>
+            <dd><a @click="logout" style="text-align: center;">退出</a></dd>
           </dl>
         </li>
 
@@ -64,7 +64,8 @@ export default {
     return {
       isMenu:false,
       showId:'',
-      hideId:''
+      hideId:'',
+      userInfo:{}
     }
   },
   computed:{
@@ -89,6 +90,36 @@ export default {
       this.hideId = setTimeout(() => {
         this.isMenu = false
       },500)
+    },
+    goPersonal_page(direction){
+      switch(direction){
+        case 'setting':
+          this.$router.replace('/personal_setting')
+          break;
+        case 'msg':
+          this.$router.replace('/personal_msg')
+          break;
+        case 'home':
+          this.$router.replace('/personal_home')
+          break;
+      }
+    },
+    logout(){
+      localStorage.removeItem('userInfo')
+      localStorage.removeItem('token')
+      this.$store.commit('set_login_state',false)
+      this.$store.commit('set_userInfo',{})
+      if(this.$router.currentRoute.fullPath != '/home'){
+        this.$router.replace('/home')
+      }
+    }
+  },
+  created(){
+    const valid = localStorage.getItem('userInfo')
+    if(valid != null && valid != '{}'){
+        this.$store.commit('set_login_state',true)
+        this.$store.commit('set_userInfo',JSON.parse(localStorage.getItem('userInfo')))
+        this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
     }
   }
 }

@@ -15,11 +15,11 @@ const Personal_msg = () => import(/* webpackChunkName: 'personal_msg' */'./views
 
 Vue.use(Router)
 
-export default new Router({
+const route = new Router({
   routes:[
     {
       path:'/',
-      redirect:'/login'
+      redirect:'/home'
     },
     {
       path:'/login',
@@ -49,21 +49,36 @@ export default new Router({
         }]
     },{
       path: '/personal_center',
-      name:'personal_center',
       component: Personal_center,
       children:[{
         path:'/personal_home',
-        component:Personal_home
+        component:Personal_home,
+        meta: { requiresAuth: true }
       },{
         path:'/personal_post',
-        component:Personal_post
+        component:Personal_post,
+        meta: { requiresAuth: true }
       },{
         path:'/personal_setting',
-        component:Personal_setting
+        component:Personal_setting,
+        meta: { requiresAuth: true }
       },{
         path:'/personal_msg',
-        component:Personal_msg
+        component:Personal_msg,
+        meta: { requiresAuth: true }
       }]
     }
   ]
 })
+route.beforeEach((to,from,next) => {
+  if(to.meta.requiresAuth){
+    if(localStorage.getItem('token')){
+      next()
+    } else {
+      next({ path: '/login' })
+    }
+  } else {
+    next()
+  }
+})
+export default route

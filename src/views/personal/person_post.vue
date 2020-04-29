@@ -25,7 +25,7 @@ export default {
   data(){
     return {
       currentIndex:0,
-      currentCompoName:'PostCollect',
+      currentCompoName:'PostMine',
       tagList:[{
         name:'我发布的帖子',
         num:98

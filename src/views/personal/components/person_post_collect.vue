@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="post-collect" style="padding: 20px 0;"> 
+  <div class="post-collect" style="padding: 20px 0;">
     <div class="layui-tab-item">
       <ul class="mine-view jie-row">
         <li>
@@ -17,4 +17,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.post-collect {
+  .layui-tab-item{
+    display: block;
+  }
+}
 </style>
