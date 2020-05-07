@@ -49,8 +49,8 @@ export default {
 
   .layui-nav{ min-height: 600px }
   .layui-col-md10 {
+    overflow: hidden;
     padding-top: 0;
-    background: #fff;
     min-height: 600px;
   }
   .layui-nav-tree .layui-nav-item .router-link-active{

@@ -9,7 +9,7 @@ export default new Vuex.Store({
     isLogin:false,
     token:'',
     userInfo:{},
-    baseUrl:'localhost:3000'
+    baseUrl:'http://localhost:3000'
   },
   mutations:{
     setSid (state,value){
@@ -23,6 +23,7 @@ export default new Vuex.Store({
     },
     set_token (state,value){
       state.token = value
+      console.log(value);
     }
   }
 })

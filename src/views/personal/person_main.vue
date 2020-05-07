@@ -1,13 +1,14 @@
 <template>
-  <div class="">
+  <div class="person_home">
+    <!-- 个人主页展示 -->
     <div class="fly-home fly-panel layui-container">
-      <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
-      <i class="iconfont icon-renzheng" title="Imooc社区认证"></i>
+      <img :src="$store.state.baseUrl+userInfo.avar" :alt="userInfo.name">
+      <!-- <i class="iconfont icon-renzheng" title="Imooc社区认证"></i> -->
       <h1>
-        贤心
+        {{userInfo.name}}
         <i class="iconfont icon-nan"></i>
         <!-- <i class="iconfont icon-nv"></i>  -->
-        <i class="layui-badge fly-badge-vip">VIP3</i>
+        <i class="layui-badge fly-badge-vip" v-show="userInfo.isVip!=0">VIP{{userInfo.isVip}}</i>
         <!--
         <span style="color:#c00;">（管理员）</span>
         <span style="color:#5FB878;">（社区之光）</span>
@@ -22,53 +23,65 @@
         <i class="iconfont icon-shijian"></i><span>2015-6-17 加入</span>
         <i class="iconfont icon-chengshi"></i><span>来自杭州</span>
       </p>
-
       <p class="fly-home-sign">（人生仿若一场修行）</p>
-
-      <div class="fly-sns" data-user="">
-        <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
-        <a href="javascript:;" class="layui-btn layui-btn-normal fly-imActive" data-type="chat">发起会话</a>
-      </div>
     </div>
+    <!-- 大众文章及签到板块 -->
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md8">
+        <PostPanel
+            :listData="lists"
+        >
+        </PostPanel>
+      </div>
 
-    <div class="layui-container">
-      <div class="layui-row layui-col-space15">
-        <!-- 最近提问 -->
-        <div class="layui-col-md6 fly-home-jie">
-          <div class="fly-panel">
-            <h3 class="fly-panel-title">贤心 最近的提问</h3>
-            <ul class="jie-row">
-              <li>
-                <span class="fly-jing">精</span>
-                <a href="" class="jie-title"> 基于 layui 的极简社区页面模版</a>
-                <i>刚刚</i>
-                <em class="layui-hide-xs">1136阅/27答</em>
-              </li>
-              <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
-            </ul>
-          </div>
-        </div>
-         <!-- 最近回答 -->
-        <div class="layui-col-md6 fly-home-da">
-          <div class="fly-panel">
-            <h3 class="fly-panel-title">贤心 最近的回答</h3>
-            <ul class="home-jieda">
-              <li>
-              <p>
-              <span>1分钟前</span>
-              在<a href="" target="_blank">tips能同时渲染多个吗?</a>中回答：
-              </p>
-            </li>
-            </ul>
-          </div>
-        </div>
+      <div class="layui-col-md4">
+        <Sign></Sign>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import PostPanel from './components/person_main_post.vue'
+import Sign from '../home/components/sign.vue'
+import { getList } from '../../service/articleService.js'
+
 export default {
+  data(){
+    return {
+      userInfo:{},
+      lists:[]
+    }
+  },
+  components: {
+    PostPanel,
+    Sign
+  },
+  methods:{
+    _getList(){
+      let options = {
+        page:0,
+        page_limit:30,
+        catalog:'index',
+        sort:'create_time'
+      }
+      getList(options).then(r => {
+        r.data.forEach(i => {
+          i.uid.avar = this.$store.state.baseUrl+i.uid.avar
+        })
+          this.lists = r.data
+      })
+    }
+  },
+  created(){
+    const userInfo = localStorage.getItem('userInfo')
+    if( userInfo != null){
+      this.userInfo = JSON.parse(userInfo)
+    }
+  },
+  mounted(){
+    this._getList()
+  }
 }
 </script>
 

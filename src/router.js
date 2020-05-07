@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import jwt from 'jsonwebtoken'
+import moment from 'moment'
+console.log('router');
 const Login = () => import(/* webpackChunkName: 'login' */'./views/Login.vue')
 const Reg = () => import(/* webpackChunkName: 'reg' */'./views/Reg.vue')
 const Forget = () => import(/* webpackChunkName: 'forget' */'./views/Forget.vue')
@@ -72,9 +74,12 @@ const route = new Router({
 })
 route.beforeEach((to,from,next) => {
   if(to.meta.requiresAuth){
-    if(localStorage.getItem('token')){
+    const token = localStorage.getItem('token')
+    console.log(moment().isBefore(moment(jwt.decode(token).exp*1000)));
+    if(token != null && moment().isBefore(moment(jwt.decode(token).exp*1000))){
       next()
     } else {
+      localStorage.clear()
       next({ path: '/login' })
     }
   } else {

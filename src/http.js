@@ -15,6 +15,10 @@ axios.interceptors.request.use(
     } else {
       key = config.url + '&' + config.method
     }
+
+    if(localStorage.getItem('token') != null){
+      config.headers.common['authorization'] = `Bearer ${localStorage.getItem('token')}`
+    }
     config.cancelToken = new CancelToken(function(c){
       pending[key] = c
     })
@@ -32,7 +36,7 @@ axios.interceptors.response.use(
       delete pending[key]
       key = ''
     }
-  
+
     if(response.status == 200){
       return Promise.resolve(response.data)
     } else {
