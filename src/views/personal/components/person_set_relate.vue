@@ -22,6 +22,6 @@ export default {
 
 <style lang="scss" scoped>
 .person_set_relate{
-  padding-top: 35px
+  padding: 30px
 }
 </style>

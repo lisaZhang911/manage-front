@@ -34,6 +34,6 @@ export default {
 
 <style lang="scss" scoped>
 .person_set_pwd{
-  padding-top: 35px
+  padding: 30px
 }
 </style>

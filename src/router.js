@@ -75,12 +75,19 @@ const route = new Router({
 route.beforeEach((to,from,next) => {
   if(to.meta.requiresAuth){
     const token = localStorage.getItem('token')
-    console.log(moment().isBefore(moment(jwt.decode(token).exp*1000)));
+
     if(token != null && moment().isBefore(moment(jwt.decode(token).exp*1000))){
       next()
     } else {
-      localStorage.clear()
-      next({ path: '/login' })
+        const sign_time = localStorage.getItem('sign_time')
+        const score = localStorage.getItem('score')
+        const count = localStorage.getItem('count')
+
+        localStorage.clear()
+        localStorage.setItem('sign_time',sign_time)
+        localStorage.setItem('score',score)
+        localStorage.setItem('count',count)
+        next({ path: '/login' })
     }
   } else {
     next()

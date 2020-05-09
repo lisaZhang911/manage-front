@@ -122,17 +122,15 @@ export default {
         code: this.code,
         sid: this.$store.state.sid
       }).then(r => {
-         if(r.code == 200){
+         if(r.code == 200 && r.err_msg==''){
            this.$store.commit('set_login_state',true)
            this.$store.commit('set_userInfo',r.data.user)
            this.$store.commit('set_token',r.data.token)
            localStorage.setItem('token',r.data.token)
            localStorage.setItem('userInfo',JSON.stringify(r.data.user))
            this.$router.replace('/home')
-         } else if(r.response.data.code ==500){
-           this.$alert('密码或用户名错误')
-         } else if(r.response.data.code==401){
-           this.$alert('验证码错误')
+         } else if(r.code !=200 || r.err_msg != ''){
+           this.$alert(r.err_msg)
          }
       }).catch(err => {
           console.log('errC', err);

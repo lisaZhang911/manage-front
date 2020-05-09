@@ -39,7 +39,7 @@
       <span class="fly-signin-days">已连续签到<cite>{{count}}</cite>天</span>
     </div>
     <div class="fly-panel-main fly-signin-main">
-      <button class="layui-btn layui-btn-danger" @click="sign">今日签到</button>
+      <button class="layui-btn layui-btn-danger" :class="{'layui-btn-disabled':isSign}" @click="sign">{{sign_txt}}</button>
       <span>已获得<cite>{{score}}</cite>飞吻</span>
     </div>
   </div>
@@ -47,13 +47,20 @@
 
 <script>
 import { sign_today } from '../../../service/userService.js'
+import moment from 'moment'
 
 export default {
   data(){
     return {
       show_help_s:false,
       count:0,
-      score:0
+      score:0,
+      isSign:false
+    }
+  },
+  computed:{
+    sign_txt(){
+      return this.isSign?'已签到':'今日签到'
     }
   },
   methods:{
@@ -64,17 +71,30 @@ export default {
       this.show_help_s = false
     },
     sign(){
+      if(this.isSign){
+        return
+      }
       sign_today().then(r => {
         this.count = r.data.count
         this.score = r.data.score
         localStorage.setItem('count',r.data.count)
         localStorage.setItem('score',r.data.score)
+        localStorage.setItem('isSign',true)
+        localStorage.setItem('sign_time',moment().format("YYYY-MM-DD"))
+        this.isSign = true
       })
     }
   },
   created(){
-    this.count = localStorage.getItem('count') || 0
-    this.score = localStorage.getItem('score') || 0
+    if(localStorage.getItem('sign_time') == moment().format("YYYY-MM-DD")) {
+      this.count = localStorage.getItem('count') || 0
+      this.score = localStorage.getItem('score') || 0
+      this.isSign = localStorage.getItem('isSign') || false
+    } else {
+      localStorage.removeItem('count')
+      localStorage.removeItem('score')
+      localStorage.removeItem('isSign')
+    }
   }
 }
 </script>

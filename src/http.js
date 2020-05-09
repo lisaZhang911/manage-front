@@ -10,18 +10,22 @@ let key = ''
 
 axios.interceptors.request.use(
   config => {
+    // 阻止重复发送API请求
     if(config.url + '&' + config.method == key){
       pending[key]()
     } else {
       key = config.url + '&' + config.method
     }
-
-    if(localStorage.getItem('token') != null){
-      config.headers.common['authorization'] = `Bearer ${localStorage.getItem('token')}`
-    }
     config.cancelToken = new CancelToken(function(c){
       pending[key] = c
     })
+    
+    // 过滤不需要鉴权的API
+    const reg_path = /(\/public)|(\/login)|(\/reg)|(\/forget)/.test(config.url)
+    if(localStorage.getItem('token') != null && !reg_path){
+      config.headers.common['authorization'] = `Bearer ${localStorage.getItem('token')}`
+    }
+
 
     return config
   },
