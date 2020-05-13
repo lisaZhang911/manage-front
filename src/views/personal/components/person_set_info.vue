@@ -24,9 +24,15 @@
           <div class="avatar-add">
             <img :src="$store.state.baseUrl+userInfo.avar">
             <span class="loading"></span>
-            <button type="button" class="layui-btn upload-img">
+            <label class="layui-btn upload-img" id="test1">
+              <input
+                type="file"
+                name="file"
+                accept ="image/png,image/gif,image/jpg,image/jpeg"
+                @change="upload"
+              />
               <i class="layui-icon">&#xe67c;</i>上传头像
-            </button>
+            </label>
             <p>建议尺寸168*168，支持jpg、png、gif，最大不能超过5MB</p>
           </div>
 
@@ -40,7 +46,7 @@
 </template>
 
 <script>
-import { update_baseInfo } from '../../../service/userService.js'
+import { update_baseInfo,uploadImg } from '../../../service/userService.js'
 
 export default {
   data(){
@@ -50,7 +56,8 @@ export default {
         location:'',
         mark:'',
         avar:''
-      }
+      },
+      formdate:''
     }
   },
   methods:{
@@ -71,9 +78,21 @@ export default {
         userInfo_obj.location = data.location
         userInfo_obj.mark = data.mark
         userInfo_obj.avar = data.avar
-
-        localStorage.setItem('userInfo',JSON.stringify(userInfo_obj))
       })
+    },
+    upload(e){
+      let file = e.target.files
+      let formDate = new FormData()
+
+      if(file.length > 0){
+        formDate.append('file',file[0])
+        this.formdate = formDate
+
+        uploadImg(formDate).then(r => {
+          console.log(r);
+          this.userInfo.avar = `/${r.data.pic}`
+        })
+      }
     }
   },
   created(){
@@ -95,5 +114,11 @@ export default {
     margin-left: 95px;
     margin-top: 35px;
   }
+}
+.upload-img{
+  width:118px
+}
+.upload-img input{
+  display: none
 }
 </style>

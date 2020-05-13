@@ -91,8 +91,8 @@ export default {
       this.score = localStorage.getItem('score') || 0
       this.isSign = localStorage.getItem('isSign') || false
     } else {
-      localStorage.removeItem('count')
-      localStorage.removeItem('score')
+      this.count = localStorage.getItem('count')
+      this.score = localStorage.getItem('score')
       localStorage.removeItem('isSign')
     }
   }
