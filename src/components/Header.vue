@@ -107,13 +107,13 @@ export default {
       }
     },
     logout(){
-      _logout()
-      this.$store.commit('set_login_state',false)
-      this.$store.commit('set_userInfo',{})
-
-      if(this.$router.currentRoute.fullPath != '/home'){
-        this.$router.replace('/home')
-      }
+      _logout.apply(this)
+      // this.$store.commit('set_login_state',false)
+      // this.$store.commit('set_userInfo',{})
+      //
+      // if(this.$router.currentRoute.fullPath != '/home'){
+      //   this.$router.replace('/home')
+      // }
     }
   },
   created(){

@@ -15,6 +15,7 @@ const Personal_post = () => import(/* webpackChunkName: 'personal_post' */'./vie
 const Personal_setting = () => import(/* webpackChunkName: 'personal_setting' */'./views/personal/person_set.vue')
 const Personal_msg = () => import(/* webpackChunkName: 'personal_msg' */'./views/personal/person_msg.vue')
 const Personal_email = () => import(/* webpackChunkName: 'personal_email' */'./views/personal/person_email.vue')
+const Personal_resetPwd = () => import(/* webpackChunkName: 'personal_resetPwd' */'./views/personal/person_resetPwd.vue')
 
 Vue.use(Router)
 
@@ -54,6 +55,9 @@ const route = new Router({
       path:'/email',
       component:Personal_email,
       meta: { requiresAuth: true }
+    },{
+      path:'/reset',
+      component:Personal_resetPwd
     },{
       path: '/personal_center',
       component: Personal_center,

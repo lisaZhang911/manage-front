@@ -6,6 +6,7 @@ const uploadImg = (file) => axios.post('/upload_img',file)
 const password_update = (params) => axios.post('/password_update',params)
 const send_mail = () => axios.get('/verify_mail')
 const change_mail = (params) => axios.post('/mail_update',params)
+const reset_pwd = (params) => axios.post('/reset_pwd',params)
 
 export {
   sign_today,
@@ -13,5 +14,6 @@ export {
   uploadImg,
   password_update,
   send_mail,
-  change_mail
+  change_mail,
+  reset_pwd
 }

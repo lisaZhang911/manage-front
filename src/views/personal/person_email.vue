@@ -33,13 +33,13 @@ export default {
           console.log(r);
           this.$alert(r.data.result)
           setTimeout(() => {
-            _logout()
-            this.$store.commit('set_login_state',false)
-            this.$store.commit('set_userInfo',{})
-
-            if(this.$router.currentRoute.fullPath != '/home'){
-              this.$router.replace('/home')
-            }
+            _logout.apply(this)
+            // this.$store.commit('set_login_state',false)
+            // this.$store.commit('set_userInfo',{})
+            //
+            // if(this.$router.currentRoute.fullPath != '/home'){
+            //   this.$router.replace('/home')
+            // }
           },1500)
         } else {
             this.$alert(r.data.err_msg)

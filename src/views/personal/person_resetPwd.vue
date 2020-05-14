@@ -1,16 +1,7 @@
 <template>
-  <div class="layui-form layui-form-pane person_set_pwd">
+  <div class="layui-form layui-form-pane person_reset_pwd">
     <ValidationObserver ref="observer" v-slot="{validate}">
       <form  method="post" @submit.prevent="validate(submit)">
-        <ValidationProvider name="nowpass" rules="required|min:6|max:16" v-slot="{errors}">
-          <div class="layui-form-item">
-            <label for="L_nowpass" class="layui-form-label">当前密码</label>
-            <div class="layui-input-inline">
-              <input v-model="nowpass" type="password" id="L_nowpass" name="nowpass" class="layui-input">
-            </div>
-            <div class="error layui-form-mid">{{errors[0]}}</div>
-          </div>
-        </ValidationProvider>
         <ValidationProvider name="pass" rules="required|min:6|max:16|confirmed:repass" v-slot="{errors}">
           <div class="layui-form-item">
             <label for="L_pass" class="layui-form-label">新密码</label>
@@ -42,8 +33,7 @@
 
 <script>
 import { ValidationObserver,ValidationProvider } from 'vee-validate'
-import { password_update } from '../../../service/userService.js'
-import { _logout } from '../../../util.js'
+import { reset_pwd } from '../../service/userService.js'
 
 export default {
   components:{
@@ -52,7 +42,6 @@ export default {
   },
   data(){
     return {
-      nowpass:'',
       password:'',
       repass:''
     }
@@ -60,28 +49,18 @@ export default {
   methods:{
     async submit(){
       const isValid = await this.$refs.observer.validate()
+      const key = this.$router.currentRoute.query.key
       if(!isValid){
         return
       }
-      if(this.nowpass == this.password){
-        this.$alert('新旧密码不可相同')
-        return
-      }
-
-      password_update({
-        nowpass:this.nowpass,
+      reset_pwd({
+        key:key,
         password:this.password
       }).then(r => {
         if(r.err_msg != ''){
           this.$alert(r.err_msg)
         } else {
           this.$alert('密码修改成功')
-          setTimeout(() => {
-            _logout.apply(this)
-            // this.$store.commit('set_login_state',false)
-            // this.$store.commit('set_userInfo',{})
-            // this.$router.replace('/home')
-          },1500)
         }
       })
     }
@@ -90,7 +69,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.person_set_pwd{
+.person_reset_pwd{
   padding: 30px
 }
 </style>
