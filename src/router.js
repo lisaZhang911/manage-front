@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
-console.log('router');
+
 const Login = () => import(/* webpackChunkName: 'login' */'./views/Login.vue')
 const Reg = () => import(/* webpackChunkName: 'reg' */'./views/Reg.vue')
 const Forget = () => import(/* webpackChunkName: 'forget' */'./views/Forget.vue')
@@ -16,6 +16,7 @@ const Personal_setting = () => import(/* webpackChunkName: 'personal_setting' */
 const Personal_msg = () => import(/* webpackChunkName: 'personal_msg' */'./views/personal/person_msg.vue')
 const Personal_email = () => import(/* webpackChunkName: 'personal_email' */'./views/personal/person_email.vue')
 const Personal_resetPwd = () => import(/* webpackChunkName: 'personal_resetPwd' */'./views/personal/person_resetPwd.vue')
+const Post_add = () => import(/* webpackChunkName: 'post_add' */'./views/personal/post_add.vue')
 
 Vue.use(Router)
 
@@ -50,6 +51,10 @@ const route = new Router({
         },{
           path: '/ques',
           component: Ques
+        },{
+          path:'/post_add',
+          component:Post_add,
+          meta: { requiresAuth: true }
         }]
     },{
       path:'/email',

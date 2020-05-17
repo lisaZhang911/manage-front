@@ -24,7 +24,6 @@ export default new Vuex.Store({
     },
     set_token (state,value){
       state.token = value
-      console.log(value);
     }
   }
 })

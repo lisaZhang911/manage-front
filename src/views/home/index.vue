@@ -1,7 +1,7 @@
 <template>
   <div id="">
     <!-- 顶部导航 -->
-    <div class="fly-panel fly-column">
+    <div class="fly-panel fly-column" v-show="head_sub">
       <div class="layui-container">
         <ul class="layui-clear">
            <router-link to="/home">
@@ -25,11 +25,11 @@
         </ul>
 
         <div class="fly-column-right layui-hide-xs">
-          <span class="fly-search"><i class="layui-icon"></i></span>
-          <a href="jie/add.html" class="layui-btn">发表新帖</a>
+          <!-- <span class="fly-search"><i class="layui-icon"></i></span> -->
+          <a @click="go_newPost" class="layui-btn">发表新帖</a>
         </div>
         <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
-          <a href="jie/add.html" class="layui-btn">发表新帖</a>
+          <a @click="go_newPost" class="layui-btn">发表新帖</a>
         </div>
       </div>
     </div>
@@ -46,7 +46,24 @@ export default {
   name: "",
   data(){
     return {
+      head_sub:true,
       isLogin:this.$store.state.isLogin
+    }
+  },
+  methods:{
+    go_newPost(){
+      this.$router.replace('/post_add')
+    }
+  },
+  created(){
+    const rexg = /\/post_add/
+    const path = this.$router.currentRoute.path
+    let result = rexg.test(path)
+
+    if(result){
+      this.head_sub = false
+    } else {
+      this.head_sub = true
     }
   }
 }

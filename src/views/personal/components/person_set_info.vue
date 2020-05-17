@@ -24,7 +24,7 @@
           <div class="avatar-add">
             <img :src="$store.state.baseUrl+userInfo.avar">
             <span class="loading"></span>
-            <label class="layui-btn upload-img" id="test1">
+            <label class="layui-btn upload-img">
               <input
                 type="file"
                 name="file"
