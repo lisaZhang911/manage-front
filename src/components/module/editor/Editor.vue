@@ -5,7 +5,7 @@
         <div class="layui-unselect fly-edit">
           <span
             ref="face"
-            @click="() => {this.faceStatus = !this.faceStatus}">
+            @click="toggle_tag(0)">
             <i class="iconfont icon-yxj-expression"></i>
           </span>
           <label class="img_test" for="pic">
@@ -14,23 +14,25 @@
             type="file"
             id="pic"
             accept="image/png,image/gif,image/jpg,image/jpeg"
+            @click="() => current_tag = -1"
             @change="upload">
           </label>
           <span
             ref="link"
-            @click.stop="toggle_link">
+            @click.stop="toggle_tag(1)">
             <i class="iconfont icon-emwdaima"></i>
           </span>
         </div>
-        <textarea class="layui-textarea fly-editor" placeholder="请编辑内容。。"></textarea>
-        <Face :isShow="faceStatus" :ctrl="$refs.face" @closeEvent="closeEvent"></Face>
-        <Link :isShow="linkStatus" :ctrl="$refs.link" @closeEvent="closeEvent" />
+        <textarea id="edit" class="layui-textarea fly-editor" placeholder="请编辑内容。。" v-model="content" @blur="blurEvent"></textarea>
+        <Face :isShow="current_tag == 0" @closeEvent="closeEvent" @addFaceIcon="addFaceIcon"></Face>
+        <Link :isShow="current_tag == 1" @closeEvent="closeEvent" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import faces from '../../../assets/mods/face.js'
 import Face from './Face.vue'
 import Link from './Link.vue'
 import {uploadImg } from '../../../service/userService.js'
@@ -43,17 +45,75 @@ export default {
   },
   data(){
     return {
-      faceStatus:false,
-      linkStatus:false
+      current_tag:-1,
+      ctrl:'',
+      content:'',
+      pos:0
     }
   },
+  watch:{
+    // content(val){
+    //   let c = val
+    //
+    //   if(c == '') return
+    //
+    //   let faceRegEx = /face\[\W{1,}\]/g
+    //   let faceRegEx_sub = /\[\W{1,}\]/g
+    //   if(faceRegEx.test(c)){
+    //     let faceGroup = c.match(faceRegEx)
+    //     // console.log('faceGroup',faceGroup);
+    //     faceGroup.map(i => {
+    //       const key = i.match(faceRegEx_sub)
+    //       console.log('key',faces[key]);
+    //       c.replace(i,`<img src="${faces[key]}"/>`)
+    //     })
+    //   }
+    // }
+  },
   methods:{
-    closeEvent(){
-      this.faceStatus = false
-      this.linkStatus = false
+    addFaceIcon(key){
+      const insertContent = `<img src="${faces[key]}"/>`
+      this.insert(insertContent)
     },
-    toggle_link(){
-      this.linkStatus = !this.linkStatus
+    blurEvent(){
+      // console.log(this.pos);
+      let elem = document.getElementById('edit')
+      if(document.selection){
+          let selectRange = document.selection.createRange()
+          selectRange.moveStart('character',-elem.value.length)
+          this.pos = selectRange.text.length
+      } else if(elem.selectionStart || elem.selectionStart == '0'){
+        // console.log('blurPosN',elem.selectionStart);
+          this.pos = elem.selectionStart
+      }
+      // console.log(this.pos);
+    },
+    insert(content){
+      if(typeof this.content == 'undefined'){
+        return
+      }
+      let tmp = this.content.split('')
+      // console.log('tmp',tmp);
+      // this.pos = tmp.length
+
+      tmp.splice(this.pos,0,content)
+      this.content = tmp.join('')
+      this.pos += content.length
+    },
+    closeEvent(){
+      this.current_tag = -1
+    },
+    toggle_tag(index){
+      this.current_tag = index
+
+      switch(index){
+        case 0:
+          this.ctrl = this.$refs.face
+          break;
+        case 1:
+          this.ctrl = this.$refs.link
+          break;
+      }
     },
     upload(e){
         let file = e.target.files
@@ -66,7 +126,24 @@ export default {
             this.userInfo.avar = `/${r.data.pic}`
           })
         }
+    },
+    handle_body(e){
+      e.stopPropagation()
+      if( this.ctrl == ''){
+        return
+      }
+      if(!this.ctrl.contains(e.target)){
+        this.closeEvent()
+      }
     }
+  },
+  mounted(){
+    this.$nextTick(() => {
+      document.querySelector('body').addEventListener('click',this.handle_body)
+    })
+  },
+  beforeDestory(){
+    document.querySelector('body').removeEventListener('click',this.handle_body)
   }
 }
 </script>

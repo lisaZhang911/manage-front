@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  props:['isShow','ctrl'],
+  props:['isShow'],
   data(){
     return {
       linkAddr:''
@@ -31,24 +31,7 @@ export default {
     },
     submit(){
       this.$emit('addLink')
-    },
-    handle_body(e){
-      e.stopPropagation()
-      if(typeof this.ctrl == 'undefined'){
-        return
-      }
-      if(!this.ctrl.contains(e.target)){
-        this.$emit('closeEvent')
-      }
     }
-  },
-  mounted(){
-    this.$nextTick(() => {
-      document.querySelector('body').addEventListener('click',this.handle_body)
-    })
-  },
-  beforeDestory(){
-    document.querySelector('body').removeEventListener('click',this.handle_body)
   }
 }
 </script>
