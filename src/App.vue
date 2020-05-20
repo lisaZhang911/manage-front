@@ -48,7 +48,7 @@ export default {
   @import "assets/layui/css/modules/layer/default/layer.css";
 
   #app {
-    height:90%
+    height:90%;
   }
   .layui-input{
     width:190px

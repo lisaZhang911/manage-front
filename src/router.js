@@ -17,6 +17,7 @@ const Personal_msg = () => import(/* webpackChunkName: 'personal_msg' */'./views
 const Personal_email = () => import(/* webpackChunkName: 'personal_email' */'./views/personal/person_email.vue')
 const Personal_resetPwd = () => import(/* webpackChunkName: 'personal_resetPwd' */'./views/personal/person_resetPwd.vue')
 const Post_add = () => import(/* webpackChunkName: 'post_add' */'./views/personal/post_add.vue')
+const Article_Detail = () => import(/* webpackChunkName:'article_detail' */'./views/home/article_detail.vue')
 
 Vue.use(Router)
 
@@ -48,6 +49,9 @@ const route = new Router({
       children:[{
           path: '/home',
           component: Home
+        },{
+          path:'/post_Detail',
+          component: Article_Detail
         },{
           path: '/ques',
           component: Ques

@@ -41,15 +41,31 @@
                       <label for="L_title" class="layui-form-label">标题</label>
                       <ValidationProvider name="title" rules="required" v-slot="{errors}">
                       <div class="layui-input-block">
-                        <input type="text" name="title" class="layui-input">
+                        <input type="text" name="title" class="layui-input" v-model="title">
                       </div>
                       <div class="error layui-form-mid">{{errors[0]}}</div>
                     </ValidationProvider>
                     </div>
                   </div>
                   <!-- 内容 -->
-                  <div class="layui-form-item layui-form-text">
-                    <Editor />
+                  <div class="layui-form-item layui-form-text ql-edit">
+                    <div id="toolbar" slot="toolbar">
+                      <button class="ql-bold"></button>
+                      <button class="ql-italic"></button>
+                      <button class="ql-underline"></button>
+                      <button class="ql-strike"></button>
+                      <select class="ql-color" value="color" title="字体颜色"></select>
+                      <button class="ql-image" type="button"></button>
+                      <button class="ql-blockquote" type="button"></button>
+                      <button class="ql-code-block" type="button"></button>
+                      <button class="ql-link" type="button"></button>
+                      <span class="iconfont icon-yxj-expression face_btn" ref="face" @click="toggle_face"></span>
+                    </div>
+                    <quillEditor ref="editor" id="edit"
+                    :options="editorOption" v-model="content"
+                    @focus="blurEvent"/>
+                    <Face :isShow="faceShow" @closeEvent="closeEvent" @addFaceIcon="addFaceIcon"></Face>
+
                   </div>
                   <!-- 积分 -->
                   <div class="layui-col-md3">
@@ -76,19 +92,6 @@
                       </ValidationProvider>
                     <div class="layui-word-aux">发表后无法更改飞吻</div>
                   </div>
-                  <!-- 验证码 -->
-                  <div class="layui-form-item vercode">
-                    <label for="L_vercode" class="layui-form-label">验证码</label>
-                    <ValidationProvider name="vercode" rules="required" v-slot="{errors}">
-                      <div class="layui-input-inline">
-                        <input type="text" name="vercode" placeholder="输入验证码" class="layui-input">
-                      </div>
-                      <div class="error layui-form-mid">{{errors[0]}}</div>
-                    </ValidationProvider>
-                    <div class="layui-form-mid">
-                      <span style="color: #c00;" v-html="svg" @click="_getCaptcha">1</span>
-                    </div>
-                  </div>
                   <div class="layui-form-item">
                     <button class="layui-btn" @click="submit">立即发布</button>
                   </div>
@@ -105,21 +108,38 @@
 
 <script>
 import Code from '../../mixin/code.js'
-import Editor from '../../components/module/editor/Editor.vue'
+import Face from '../../components/module/editor/Face.vue'
+import faces from '../../assets/mods/face.js'
+import { add_post } from '../../service/articleService.js'
+
+import {quillEditor} from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
 
 export default {
   mixins:[Code],
   components:{
-    Editor
+    Face,
+    quillEditor
   },
   data(){
     return {
+      title:'',
+      current_tag:-1,
+      faceShow:false,
       selected:false,
       selected_s:false,
       currentIndex:-1,
       currentIndex_s:-1,
       currentIndex_txt:'',
       currentIndex_score:'',
+      content:'',
+      pos:0,
+      editorOption:{
+        modules:{
+          toolbar: '#toolbar'
+        }
+      },
       score_lists:[{
         index:0,
         score:20
@@ -158,11 +178,29 @@ export default {
     }
   },
   methods:{
+    addFaceIcon(key){
+      const insertContent = faces[key]
+      this.quillObj().insertEmbed(this.pos, 'image', insertContent)
+    },
+    quillObj(){
+      const quill = this.$refs['editor'].quill;
+      return quill
+    },
+    blurEvent(){
+      const descRage = this.quillObj().getSelection();
+      this.pos = descRage.index
+    },
+    closeEvent(){
+      this.faceShow = false
+    },
     open_select(){
       this.selected = !this.selected
     },
     open_select_s(){
       this.selected_s = !this.selected_s
+    },
+    toggle_face(){
+      this.faceShow = !this.faceShow
     },
     change_dl_s(index){
       this.currentIndex_s = index
@@ -190,29 +228,49 @@ export default {
       this.open_select()
       switch(index){
         case 0:
-          this.currentIndex_txt = '提问'
+          this.currentIndex_txt = 'ask'
           break;
         case 1:
-          this.currentIndex_txt = '分享'
+          this.currentIndex_txt = 'share'
           break;
         case 2:
-          this.currentIndex_txt = '讨论'
+          this.currentIndex_txt = 'discuss'
           break;
         case 3:
-          this.currentIndex_txt = '建议'
+          this.currentIndex_txt = 'advice'
           break;
         case 4:
-          this.currentIndex_txt = '公告'
+          this.currentIndex_txt = 'notice'
           break;
         case 5:
-          this.currentIndex_txt = '动态'
+          this.currentIndex_txt = 'news'
           break;
       }
     },
-    submit(){}
+    submit(){
+      let obj = {
+        catalog:this.currentIndex_txt,
+        title:this.title,
+        content:this.content,
+        score:this.currentIndex_score
+      }
+      add_post(obj).then(r => console.log(r))
+    },
+    handle_body(e){
+      e.stopPropagation()
+      const ctrl = this.$refs.face
+      if(!ctrl.contains(e.target)){
+        this.closeEvent()
+      }
+    }
   },
   mounted(){
-
+    this.$nextTick(() => {
+      document.querySelector('body').addEventListener('click',this.handle_body)
+    })
+  },
+  beforeDestory(){
+    document.querySelector('body').removeEventListener('click',this.handle_body)
   }
 }
 </script>
@@ -220,5 +278,14 @@ export default {
 <style lang="scss" scoped>
 .layui-word-aux{
   padding: 8px 5px 30px!important
+}
+.quill-editor{
+  height: 400px
+}
+.ql-edit{
+  position: relative;
+}
+.face_btn {
+  cursor: pointer;
 }
 </style>

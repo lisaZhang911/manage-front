@@ -10,7 +10,7 @@
 /* 全局 */
 html,body{overflow-x: hidden;}
 html body{margin-top: 61px;}
-html{background-color: #F2F2F2;}
+html,body{background-color: #F2F2F2;}
 i{font-style: normal;}
 
 /* 图标 */
@@ -184,7 +184,7 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 /* 专栏 */
 .fly-column{height: 50px; line-height: 50px;}
 .fly-column ul li{position: relative; display: inline-block; height: 50px;}
-.fly-column ul li a{padding: 0 20px;}
+.fly-column ul li a{padding: 0 20px;color: #333}
 .fly-column ul li.layui-this:after{ position: absolute; bottom: 13px; left: 8px; width: 50px; height: 22px; border: 1px solid #5FB878; border-radius: 2px;}
 .fly-column ul li.layui-this a{color: #5FB878;}
 .fly-column ul li .fly-mid{margin: 0 20px;}
@@ -231,13 +231,13 @@ pre{padding: 10px 15px; margin: 10px 0; font-size: 12px; border-left: 6px solid 
 .fly-edit span:hover{color: #5DB276;}
 
 /* 列表 */
-.fly-list li{position: relative; height: 45px; line-height: 22px; padding: 15px 15px 15px 75px; border-bottom: 1px dotted #e2e2e2;}
+.fly-list li{position: relative; height: 75px; line-height: 22px; padding: 15px 15px 15px 75px; border-bottom: 1px dotted #e2e2e2;}
 .fly-list li:last-child{border-bottom: none;}
 .fly-list li h2,
 .fly-list li h2 a,
 .fly-list-info{white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 .fly-list li h2{height: 26px; font-size: 0;}
-.fly-list li h2 a{display: inline-block; max-width: 80%; padding-right: 10px; font-size: 16px;}
+.fly-list li h2 a{color:#333;display: inline-block; max-width: 80%; padding-right: 10px; font-size: 16px;}
 .fly-list li h2 .layui-badge{top: -2px; height: 16px; line-height: 16px; padding: 0 5px; margin-right: 10px; font-size: 12px; border: 1px solid #5FB878; background: none; color: #5FB878;}
 
 .fly-list-info{position: relative; font-size: 13px; color: #999;}
@@ -266,7 +266,7 @@ body .layui-edit-face{ border:none; background:none;}
 body .layui-edit-face  .layui-layer-content{padding:0; background-color:#fff; color:#666; box-shadow:none}
 .layui-edit-face .layui-layer-TipsG{display:none;}
 .layui-edit-face ul{position:relative; width:372px; padding:10px; border:1px solid #D9D9D9; background-color:#fff; box-shadow: 0 0 20px rgba(0,0,0,.2);}
-.layui-edit-face ul li{cursor: pointer; float: left; border: 1px solid #e8e8e8; height: 22px; width: 26px; overflow: hidden; margin: -1px 0 0 -1px; padding: 4px 2px; text-align: center;}
+.layui-edit-face ul li{cursor: pointer; float: left; border: 1px solid #e8e8e8; height: 32px; width: 26px; overflow: hidden; margin: -1px 0 0 -1px; padding: 4px 2px; text-align: center;}
 .layui-edit-face ul li:hover{position: relative; border: 1px solid #eb7350; background: #fff9ec;}
 
 /* 签到 */

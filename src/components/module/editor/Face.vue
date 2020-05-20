@@ -16,7 +16,7 @@
 import faces from '../../../assets/mods/face.js'
 
 export default {
-  props:['isShow'],
+  props:['isShow','ctrl'],
   data(){
     return {
       lists:faces
@@ -33,6 +33,7 @@ export default {
 <style lang="scss" scoped>
 .layui-edit-face{
   position: absolute;
-  top:45px;left:0
+  top:45px;left:250px;
+  background: #fff
 }
 </style>
