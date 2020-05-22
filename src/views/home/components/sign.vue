@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { sign_today } from '../../../service/userService.js'
+import { sign_today } from '@/service/userService.js'
 import moment from 'moment'
 
 export default {

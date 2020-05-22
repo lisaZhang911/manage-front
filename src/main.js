@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VeeValidate,{ Validator } from 'vee-validate'
-import zh from 'vee-validate/dist/locale/zh_CN'
+import './local/index.js'
+// import zh from 'vee-validate/dist/locale/zh_CN'
 import router from './router.js'
 import store from './store.js'
 import { Page } from 'view-design'
@@ -11,8 +12,13 @@ import 'view-design/dist/styles/iview.css';
 Vue.component('Page', Page);
 Vue.use(VeeValidate)
 Vue.use(Alert)
-Validator.localize('zh-CN',zh)
+// Validator.localize('zh-CN',zh)
+
+const validator = new Validator()
+validator.localize('zh-CN')
+
 Vue.config.productionTip = false
+
 
 new Vue({
   render: h => h(App),

@@ -19,7 +19,7 @@
                         <div class="layui-input-block">
                           <div class="layui-unselect layui-form-select" :class="{'layui-form-selected':selected}">
                             <div class="layui-select-title" @click="open_select">
-                              <input type="text" name="catalog" placeholder="请选择" :value="currentIndex_txt" readonly class="layui-input layui-unselect">
+                              <input type="text" name="catalog" placeholder="请选择" v-model="currentIndex_txt_c" readonly class="layui-input layui-unselect">
                               <i class="layui-edge"></i>
                             </div>
                             <dl class="layui-anim layui-anim-upbit custom-select">
@@ -61,11 +61,13 @@
                       <button class="ql-link" type="button"></button>
                       <span class="iconfont icon-yxj-expression face_btn" ref="face" @click="toggle_face"></span>
                     </div>
-                    <quillEditor ref="editor" id="edit"
-                    :options="editorOption" v-model="content"
-                    @focus="blurEvent"/>
-                    <Face :isShow="faceShow" @closeEvent="closeEvent" @addFaceIcon="addFaceIcon"></Face>
-
+                    <ValidationProvider name="content" rules="required" v-slot="{errors}">
+                      <quillEditor ref="editor" id="edit"
+                      :options="editorOption" v-model="content"
+                      @focus="blurEvent"/>
+                      <Face :isShow="faceShow" @closeEvent="closeEvent" @addFaceIcon="addFaceIcon"></Face>
+                      <div class="error layui-form-mid">{{errors[0]}}</div>
+                    </ValidationProvider >
                   </div>
                   <!-- 积分 -->
                   <div class="layui-col-md3">
@@ -74,7 +76,7 @@
                       <div class="layui-input-block">
                         <div class="layui-unselect layui-form-select" :class="{'layui-form-selected':selected_s}">
                           <div class="layui-select-title" @click="open_select_s">
-                            <input type="text" placeholder="请选择" :value="currentIndex_score" readonly class="layui-input layui-unselect">
+                            <input type="text" placeholder="请选择" v-model="currentIndex_score" readonly class="layui-input layui-unselect">
                             <i class="layui-edge"></i>
                           </div>
                           <dl class="layui-anim layui-anim-upbit custom-select">
@@ -107,10 +109,11 @@
 </template>
 
 <script>
-import Code from '../../mixin/code.js'
-import Face from '../../components/module/editor/Face.vue'
-import faces from '../../assets/mods/face.js'
-import { add_post } from '../../service/articleService.js'
+import Code from '@/mixin/code.js'
+import Face from '@/components/module/editor/Face.vue'
+import faces from '@/assets/mods/face.js'
+import { add_post } from '@/service/articleService.js'
+import { debounce } from '@/util.js'
 
 import {quillEditor} from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
@@ -132,6 +135,7 @@ export default {
       currentIndex:-1,
       currentIndex_s:-1,
       currentIndex_txt:'',
+      currentIndex_txt_c:'',
       currentIndex_score:'',
       content:'',
       pos:0,
@@ -175,6 +179,13 @@ export default {
         index:5,
         title:'动态'
       }]
+    }
+  },
+  watch:{
+    content:function(){
+      debounce(() => {
+        localStorage.setItem('content',this.content)
+      },1500)
     }
   },
   methods:{
@@ -228,40 +239,67 @@ export default {
       this.open_select()
       switch(index){
         case 0:
-          this.currentIndex_txt = 'ask'
+        this.currentIndex_txt = 'ask'
+          this.currentIndex_txt_c = '提问'
           break;
         case 1:
           this.currentIndex_txt = 'share'
+          this.currentIndex_txt_c = '分享'
           break;
         case 2:
           this.currentIndex_txt = 'discuss'
+          this.currentIndex_txt_c = '讨论'
           break;
         case 3:
           this.currentIndex_txt = 'advice'
+          this.currentIndex_txt_c = '建议'
           break;
         case 4:
           this.currentIndex_txt = 'notice'
+          this.currentIndex_txt_c = '公告'
           break;
         case 5:
           this.currentIndex_txt = 'news'
+          this.currentIndex_txt_c = '动态'
           break;
       }
     },
-    submit(){
+    async submit(){
+      const isValid = await this.$refs.observer.validate()
+      if(!isValid){
+        return
+      }
       let obj = {
         catalog:this.currentIndex_txt,
         title:this.title,
         content:this.content,
         score:this.currentIndex_score
       }
-      add_post(obj).then(r => console.log(r))
+      add_post(obj).then(r => {
+        if(r.code == 200){
+          this.$alert(r.data.result)
+          setTimeout(() => {
+            this.$router.replace('/home')
+          },2000)
+          localStorage.removeItem('content')
+        } else {
+          this.$alert(r.err_msg)
+        }
+      })
     },
     handle_body(e){
       e.stopPropagation()
       const ctrl = this.$refs.face
+      if(ctrl == undefined) return
       if(!ctrl.contains(e.target)){
         this.closeEvent()
       }
+    }
+  },
+  created(){
+    const content = localStorage.getItem('content')
+    if(content){
+      this.content = content
     }
   },
   mounted(){

@@ -15,10 +15,14 @@ const gethot = () => axios.get('/public/getHot_w')
 //发布文章
 const add_post = (params) => axios.post('/add_post',params)
 
+// 文章详情
+const get_list_detail = (params) => axios.get('/public/get_postDetail?id='+params)
+
 export {
   getList,
   getTips,
   links,
   gethot,
-  add_post
+  add_post,
+  get_list_detail
 }

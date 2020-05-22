@@ -44,7 +44,7 @@
 <script>
 import PostPanel from './components/person_main_post.vue'
 import Sign from '../home/components/sign.vue'
-import { getList } from '../../service/articleService.js'
+import { getList } from '@/service/articleService.js'
 
 export default {
   data(){

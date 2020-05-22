@@ -33,7 +33,7 @@
 
 <script>
 import { ValidationObserver,ValidationProvider } from 'vee-validate'
-import { reset_pwd } from '../../service/userService.js'
+import { reset_pwd } from '@/service/userService.js'
 
 export default {
   components:{

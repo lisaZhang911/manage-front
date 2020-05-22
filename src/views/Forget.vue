@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { getCode,forget } from '../service/loginService.js'
+import { getCode,forget } from '@/service/loginService.js'
 import { v4 as uuidv4 } from 'uuid'
 import { ValidationObserver,ValidationProvider } from 'vee-validate'
 

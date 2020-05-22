@@ -16,9 +16,9 @@
     </div>
     <!-- 搜索后展示的帖子 -->
     <ul class="fly-list">
-      <li v-for="item in listData" :key="item.tid">
+      <li v-for="item in listData" :key="item.tid" @click="article_detail(item._id)">
         <a class="fly-avatar">
-          <img :src="item.uid.avar">
+          <img :src="baseURL+item.uid.avar">
         </a>
         <h2>
           <a class="layui-badge" >{{item.catalog}}</a>
@@ -56,6 +56,7 @@ export default {
   props:['listData'],
   data(){
     return {
+      baseURL:this.$store.state.baseUrl,
       f1_state:'0',
       f2_state:'create_time'
     }
@@ -76,6 +77,9 @@ export default {
         this.f2_state = index
       }
       this.$emit('changeTags',index,flag)
+    },
+    article_detail(id){
+      this.$emit('get_article_detail',id)
     }
   }
 }

@@ -1,3 +1,4 @@
+let timer = null
 
 const _logout =  function(){
   const sign_time = localStorage.getItem('sign_time')
@@ -19,6 +20,14 @@ const _logout =  function(){
   }
 }
 
+const debounce = function(func,delay){
+  if(timer){
+    clearTimeout(timer)
+  }
+  timer = setTimeout(func,delay)
+}
+
 export {
-  _logout
+  _logout,
+  debounce
 }

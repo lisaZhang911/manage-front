@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { send_mail } from '../../../service/userService.js'
+import { send_mail } from '@/service/userService.js'
 
 export default {
   data(){

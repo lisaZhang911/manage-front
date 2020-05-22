@@ -1,19 +1,19 @@
 <template>
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md8">
-      <PanelSearch></PanelSearch>
+      <!-- <PanelSearch></PanelSearch> -->
     </div>
 
   </div>
 </template>
 
 <script>
-import PanelSearch from './components/Panel_search.vue'
+// import PanelSearch from './components/Panel_search.vue'
 
 export default {
   name: "",
   components: {
-    PanelSearch
+    // PanelSearch
   },
   data: () => ({
 

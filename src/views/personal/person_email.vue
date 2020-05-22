@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import { change_mail } from '../../service/userService.js'
-import { _logout } from '../../util.js'
+import { change_mail } from '@/service/userService.js'
+import { _logout } from '@/util.js'
 
 export default {
   data(){

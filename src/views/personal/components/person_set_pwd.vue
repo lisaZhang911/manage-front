@@ -42,8 +42,8 @@
 
 <script>
 import { ValidationObserver,ValidationProvider } from 'vee-validate'
-import { password_update } from '../../../service/userService.js'
-import { _logout } from '../../../util.js'
+import { password_update } from '@/service/userService.js'
+import { _logout } from '@/util.js'
 
 export default {
   components:{

@@ -1,7 +1,7 @@
 <template>
   <div id="">
     <!-- 顶部导航 -->
-    <div class="fly-panel fly-column" v-show="head_sub">
+    <div class="fly-panel fly-column">
       <div class="layui-container">
         <ul class="layui-clear">
            <router-link to="/home">
@@ -18,17 +18,17 @@
           <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
 
           <!-- 用户登入后显示 -->
-          <template v-if="isLogin">
+          <template v-if="isLogin && head_sub">
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/index.html">我发表的贴</a></li>
             <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="user/index.html#collection">我收藏的贴</a></li>
           </template>
         </ul>
 
-        <div class="fly-column-right layui-hide-xs">
+        <div class="fly-column-right layui-hide-xs" v-show="head_sub">
           <!-- <span class="fly-search"><i class="layui-icon"></i></span> -->
           <a @click="go_newPost" class="layui-btn">发表新帖</a>
         </div>
-        <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
+        <div v-show="head_sub" class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
           <a @click="go_newPost" class="layui-btn">发表新帖</a>
         </div>
       </div>
@@ -55,9 +55,9 @@ export default {
       this.$router.replace('/post_add')
     }
   },
-  created(){
+  beforeRouteUpdate (to, from, next) {
     const rexg = /\/post_add/
-    const path = this.$router.currentRoute.path
+    const path = to.path
     let result = rexg.test(path)
 
     if(result){
@@ -65,6 +65,7 @@ export default {
     } else {
       this.head_sub = true
     }
+    next()
   }
 }
 </script>

@@ -3,50 +3,49 @@
     <div class="layui-row layui-col-space15">
       <div class="layui-col-md12 content detail">
         <div class="fly-panel detail-box">
-          <h1>Imooc社区，基于 layui 的极简社区页面模版</h1>
+          <h1>{{detail_info.title}}</h1>
           <div class="fly-detail-info">
             <!-- <span class="layui-badge">审核中</span> -->
-            <span class="layui-badge layui-bg-green fly-detail-column">动态</span>
+            <span v-if="detail_info.catalog == 'notice'" class="layui-badge layui-bg-green fly-detail-column">动态</span>
 
-            <span class="layui-badge" style="background-color: #999;">未结</span>
+            <span v-if="detail_info.tags == '1'" class="layui-badge" style="background-color: #999;">未结</span>
             <!-- <span class="layui-badge" style="background-color: #5FB878;">已结</span> -->
 
-            <span class="layui-badge layui-bg-black">置顶</span>
-            <span class="layui-badge layui-bg-red">精帖</span>
+            <span v-if="detail_info.isTop == '1'" class="layui-badge layui-bg-black">置顶</span>
+            <!-- <span class="layui-badge layui-bg-red">精帖</span> -->
 
             <div class="fly-admin-box" data-id="123">
               <span class="layui-btn layui-btn-xs jie-admin" type="del">删除</span>
 
-              <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="1">置顶</span>
+              <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="1">置顶</span> -->
               <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="0" style="background-color:#ccc;">取消置顶</span> -->
 
-              <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="1">加精</span>
+              <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="1">加精</span> -->
               <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精</span> -->
             </div>
             <span class="fly-list-nums">
-              <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> 66</a>
-              <i class="iconfont" title="人气">&#xe60b;</i> 99999
+              <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i>{{detail_info.answ_s}}</a>
+              <i class="iconfont" title="人气">&#xe60b;</i>{{detail_info.read_s}}
             </span>
           </div>
           <div class="detail-about">
             <a class="fly-avatar" href="../user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+              <img :src="$store.state.baseUrl+detail_info_user.avar">
             </a>
             <div class="fly-detail-user">
               <a href="../user/home.html" class="fly-link">
-                <cite>贤心</cite>
-                <i class="iconfont icon-renzheng" title="认证信息"></i>
-                <i class="layui-badge fly-badge-vip">VIP3</i>
+                <cite>{{detail_info_user.name}}</cite>
+                <i class="layui-badge fly-badge-vip" v-if="detail_info_user.isVip!=0">VIP{{detail_info_user.isVip}}</i>
               </a>
-              <span>2017-11-30</span>
+              <span>{{parse_time}}</span>
             </div>
             <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
-              <span style="padding-right: 10px; color: #FF7200">悬赏：60飞吻</span>
+              <span style="padding-right: 10px; color: #FF7200">悬赏：{{detail_info.score}}飞吻</span>
               <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a>编辑此贴</a></span>
               <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a>收藏此贴</a></span>
             </div>
           </div>
-          <div class="detail-body photos">
+          <div class="detail-body photos" v-html="detail_info.content">
           内容。。。。。
 
 
@@ -163,8 +162,33 @@
 </template>
 
 <script>
+import { get_list_detail } from '@/service/articleService.js'
+import moment from 'moment'
 
 export default {
+  data(){
+    return {
+      detail_info:{},
+      detail_info_user:{}
+    }
+  },
+  computed:{
+    parse_time(){
+      return moment(this.detail_info.create_time).format('YYYY-MM-DD')
+    }
+  },
+  mounted(){
+    const id = this.$router.currentRoute.query.id
+    get_list_detail(id).then(r => {
+      if(r.code == 200){
+        this.detail_info = r.data
+        this.detail_info_user = r.data.uid
+      } else {
+        this.$alert('查询错误')
+      }
+    })
+    //获取评论
+  }
 }
 </script>
 

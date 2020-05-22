@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { update_baseInfo,uploadImg } from '../../../service/userService.js'
+import { update_baseInfo,uploadImg } from '@/service/userService.js'
 
 export default {
   data(){

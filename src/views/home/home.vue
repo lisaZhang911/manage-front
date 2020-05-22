@@ -6,6 +6,7 @@
           :listData="lists"
           @getMore="getMore"
           @changeTags="changeTags"
+          @get_article_detail="get_article_detail"
       >
       </PanelSearch>
     </div>
@@ -26,7 +27,7 @@ import Channel from './components/channel.vue'
 import WeekBoard from './components/week_board.vue'
 import Adver from './components/adv.vue'
 import LinkShare from './components/link.vue'
-import { getList } from '../../service/articleService.js'
+import { getList } from '@/service/articleService.js'
 import moment from 'moment'
 
 export default {
@@ -98,7 +99,7 @@ export default {
       let options = {
         page:this.page,
         page_limit:20,
-        catalog:'ask',
+        catalog:'index',
         sort:this.sort
       }
       if(this.tags != ''){
@@ -116,6 +117,9 @@ export default {
         }
         this.page = this.page+1
       })
+    },
+    get_article_detail(id){
+      this.$router.replace('/post_Detail?id='+id)
     }
   },
   mounted(){

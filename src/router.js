@@ -16,8 +16,8 @@ const Personal_setting = () => import(/* webpackChunkName: 'personal_setting' */
 const Personal_msg = () => import(/* webpackChunkName: 'personal_msg' */'./views/personal/person_msg.vue')
 const Personal_email = () => import(/* webpackChunkName: 'personal_email' */'./views/personal/person_email.vue')
 const Personal_resetPwd = () => import(/* webpackChunkName: 'personal_resetPwd' */'./views/personal/person_resetPwd.vue')
-const Post_add = () => import(/* webpackChunkName: 'post_add' */'./views/personal/post_add.vue')
-const Article_Detail = () => import(/* webpackChunkName:'article_detail' */'./views/home/article_detail.vue')
+const Post_add = () => import(/* webpackChunkName: 'post_add' */'./views/article/post_add.vue')
+const Article_Detail = () => import(/* webpackChunkName:'article_detail' */'./views/article/article_detail.vue')
 
 Vue.use(Router)
 
