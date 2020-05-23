@@ -18,11 +18,19 @@ const add_post = (params) => axios.post('/add_post',params)
 // 文章详情
 const get_list_detail = (params) => axios.get('/public/get_postDetail?id='+params)
 
+//提交评论
+const add_comment = (params) => axios.post('/add_comment',params)
+
+//评论列表
+const get_comments = (params) => axios.get('/public/comments?'+qs.stringify(params))
+
 export {
   getList,
   getTips,
   links,
   gethot,
   add_post,
-  get_list_detail
+  get_list_detail,
+  add_comment,
+  get_comments
 }

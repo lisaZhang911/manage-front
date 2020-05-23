@@ -6,12 +6,12 @@
           <h1>{{detail_info.title}}</h1>
           <div class="fly-detail-info">
             <!-- <span class="layui-badge">审核中</span> -->
-            <span v-if="detail_info.catalog == 'notice'" class="layui-badge layui-bg-green fly-detail-column">动态</span>
+            <span v-show="detail_info.catalog == 'notice'" class="layui-badge layui-bg-green fly-detail-column">动态</span>
 
-            <span v-if="detail_info.tags == '1'" class="layui-badge" style="background-color: #999;">未结</span>
+            <span v-show="detail_info.tags == '1'" class="layui-badge" style="background-color: #999;">未结</span>
             <!-- <span class="layui-badge" style="background-color: #5FB878;">已结</span> -->
 
-            <span v-if="detail_info.isTop == '1'" class="layui-badge layui-bg-black">置顶</span>
+            <span v-show="detail_info.isTop == '1'" class="layui-badge layui-bg-black">置顶</span>
             <!-- <span class="layui-badge layui-bg-red">精帖</span> -->
 
             <div class="fly-admin-box" data-id="123">
@@ -35,9 +35,9 @@
             <div class="fly-detail-user">
               <a href="../user/home.html" class="fly-link">
                 <cite>{{detail_info_user.name}}</cite>
-                <i class="layui-badge fly-badge-vip" v-if="detail_info_user.isVip!=0">VIP{{detail_info_user.isVip}}</i>
+                <i class="layui-badge fly-badge-vip" v-show="detail_info_user.isVip!=0">VIP{{detail_info_user.isVip}}</i>
               </a>
-              <span>{{parse_time}}</span>
+              <span>{{detail_info.create_time}}</span>
             </div>
             <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
               <span style="padding-right: 10px; color: #FF7200">悬赏：{{detail_info.score}}飞吻</span>
@@ -57,72 +57,32 @@
           <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
             <legend>回帖</legend>
           </fieldset>
-
-          <ul class="jieda" id="jieda">
-            <li data-id="111" class="jieda-daan">
-              <a name="item-1111111111"></a>
+          <!-- 评论列表 -->
+          <ul class="jieda">
+            <li class="jieda-daan" v-for="i in comment_list" :key="i._id">
               <div class="detail-about detail-about-reply">
                 <a class="fly-avatar" href="">
-                  <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+                  <img :src="$store.state.baseUrl+i.uid.avar" alt=" ">
                 </a>
                 <div class="fly-detail-user">
                   <a href="" class="fly-link">
-                    <cite>贤心</cite>
-                    <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-                    <i class="layui-badge fly-badge-vip">VIP3</i>
+                    <cite>{{i.uid.name}}</cite>
+                    <i class="layui-badge fly-badge-vip" v-show="i.uid.isVip!=0">VIP{{i.uid.isVip}}</i>
                   </a>
-
-                  <span>(楼主)</span>
+                  <span v-show="i.uid._id == uid">(楼主)</span>
                 </div>
-
                 <div class="detail-hits">
-                  <span>2017-11-30</span>
+                  <span>{{i.create_time}}</span>
                 </div>
-
-                <i class="iconfont icon-caina" title="最佳答案"></i>
+                <i v-show="i.isBest=='1'" class="iconfont icon-caina" title="最佳答案"></i>
               </div>
               <div class="detail-body jieda-body photos">
-                <p>香菇那个蓝瘦，这是一条被采纳的回帖</p>
+                <p>{{i.content}}</p>
               </div>
               <div class="jieda-reply">
                 <span class="jieda-zan zanok" type="zan">
                   <i class="iconfont icon-zan"></i>
-                  <em>66</em>
-                </span>
-                <span type="reply">
-                  <i class="iconfont icon-svgmoban53"></i>
-                  回复
-                </span>
-                <div class="jieda-admin">
-                  <span type="edit">编辑</span>
-                  <span type="del">删除</span>
-                  <!-- <span class="jieda-accept" type="accept">采纳</span> -->
-                </div>
-              </div>
-            </li>
-
-            <li data-id="111">
-              <a name="item-1111111111"></a>
-              <div class="detail-about detail-about-reply">
-                <a class="fly-avatar" href="">
-                  <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
-                </a>
-                <div class="fly-detail-user">
-                  <a href="" class="fly-link">
-                    <cite>贤心</cite>
-                  </a>
-                </div>
-                <div class="detail-hits">
-                  <span>2017-11-30</span>
-                </div>
-              </div>
-              <div class="detail-body jieda-body photos">
-                <p>蓝瘦那个香菇，这是一条没被采纳的回帖</p>
-              </div>
-              <div class="jieda-reply">
-                <span class="jieda-zan" type="zan">
-                  <i class="iconfont icon-zan"></i>
-                  <em>0</em>
+                  <em>{{i.good_count}}</em>
                 </span>
                 <span type="reply">
                   <i class="iconfont icon-svgmoban53"></i>
@@ -135,25 +95,28 @@
                 </div>
               </div>
             </li>
-
             <!-- 无数据时 -->
-            <!-- <li class="fly-none">消灭零回复</li> -->
+            <li class="fly-none" v-show="comment_list.length<1">消灭零回复</li>
           </ul>
           <!-- 分页 -->
-           <Page :total="100" />
+          <Page class="page" :total="pageTotal" />
+          <!-- 回复区域 -->
           <div class="layui-form layui-form-pane">
-            <form action="/jie/reply/" method="post">
-              <div class="layui-form-item layui-form-text">
-                <a name="comment"></a>
-                <div class="layui-input-block">
-                  <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+            <ValidationObserver ref="observer" v-slot="{validate}">
+              <form method="post" @submit.prevent="validate(submit_commit)">
+                <div class="layui-form-item layui-form-text">
+                  <ValidationProvider name="content" rules="required" v-slot="{errors}">
+                    <div class="layui-input-block">
+                      <textarea v-model="content" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+                    </div>
+                    <div class="error layui-form-mid">{{errors[0]}}</div>
+                  </ValidationProvider >
                 </div>
-              </div>
-              <div class="layui-form-item">
-                <input type="hidden" name="jid" value="123">
-                <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
-              </div>
-            </form>
+                <div class="layui-form-item">
+                  <button class="layui-btn" @click="submit_commit">提交回复</button>
+                </div>
+              </form>
+            </ValidationObserver>
           </div>
         </div>
       </div>
@@ -162,25 +125,62 @@
 </template>
 
 <script>
-import { get_list_detail } from '@/service/articleService.js'
+import { get_list_detail,add_comment,get_comments } from '@/service/articleService.js'
+import { parse_time } from '@/util.js'
+import Code from '@/mixin/code.js'
 import moment from 'moment'
+import jwt from 'jsonwebtoken'
+
 
 export default {
+  mixins:[Code],
   data(){
     return {
+      tid:'',
+      uid:'',
+      content:'',
+      page:0,
+      page_limit:20,
       detail_info:{},
-      detail_info_user:{}
+      detail_info_user:{},
+      comment_list:[],
+      pageTotal:0
     }
   },
-  computed:{
-    parse_time(){
-      return moment(this.detail_info.create_time).format('YYYY-MM-DD')
+  methods:{
+    async submit_commit(){
+      //是否登录
+      const token = localStorage.getItem('token')
+      if(token == undefined || !moment().isBefore(jwt.decode(token).exp*1000)){
+        this.$router.replace('/login')
+        return
+      }
+      //是否有评论内容
+      const isValid = await this.$refs.observer.validate()
+      if(!isValid){
+        return
+      }
+      //收集信息并提交
+      add_comment({
+        uid:jwt.decode(token)._id,
+        tid:this.tid,
+        content:this.content
+      }).then(r => {
+        if(r.code == 200){
+          this.$alert(r.data.result)
+        } else {
+          this.$alert('提交失败')
+        }
+      })
     }
   },
   mounted(){
-    const id = this.$router.currentRoute.query.id
+    const id = this.tid = this.$router.currentRoute.query.id
+    this.uid = jwt.decode(localStorage.getItem('token'))._id
+    //获取文章详情
     get_list_detail(id).then(r => {
       if(r.code == 200){
+        r.data.create_time = parse_time(r.data.create_time)
         this.detail_info = r.data
         this.detail_info_user = r.data.uid
       } else {
@@ -188,9 +188,28 @@ export default {
       }
     })
     //获取评论
+    get_comments({
+      tid:id,
+      page:this.page,
+      page_limit:this.page_limit
+    }).then(r => {
+      if(r.code == 200){
+        this.comment_list = r.data.result.map(x => {
+          x.create_time = parse_time(x.create_time)
+          return x
+        })
+        this.pageTotal = r.data.page_total*10
+      }
+    })
+
+    //记录已看次数
   }
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
+.page{
+  text-align: center;
+  padding-bottom: 50px
+}
 </style>

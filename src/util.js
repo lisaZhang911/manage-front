@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 let timer = null
 
 const _logout =  function(){
@@ -27,7 +29,12 @@ const debounce = function(func,delay){
   timer = setTimeout(func,delay)
 }
 
+const parse_time = function(time){
+  return moment(time).format('YYYY-MM-DD')
+}
+
 export {
   _logout,
-  debounce
+  debounce,
+  parse_time
 }
