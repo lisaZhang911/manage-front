@@ -1,4 +1,5 @@
 import moment from 'moment'
+import jwt from 'jsonwebtoken'
 
 let timer = null
 
@@ -33,8 +34,14 @@ const parse_time = function(time){
   return moment(time).format('YYYY-MM-DD')
 }
 
+const login_state = function(){
+    const token = localStorage.getItem('token')
+    return token != null && moment().isBefore(moment(jwt.decode(token).exp*1000))
+}
+
 export {
   _logout,
   debounce,
-  parse_time
+  parse_time,
+  login_state
 }

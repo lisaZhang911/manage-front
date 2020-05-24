@@ -24,6 +24,12 @@ const add_comment = (params) => axios.post('/add_comment',params)
 //评论列表
 const get_comments = (params) => axios.get('/public/comments?'+qs.stringify(params))
 
+//采纳评论
+const set_best = (param) => axios.post('/set_best',param)
+
+//点赞-评论
+const set_good = (param) => axios.post('/set_good',param)
+
 export {
   getList,
   getTips,
@@ -32,5 +38,7 @@ export {
   add_post,
   get_list_detail,
   add_comment,
-  get_comments
+  get_comments,
+  set_best,
+  set_good
 }

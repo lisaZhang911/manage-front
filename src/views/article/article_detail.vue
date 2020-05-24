@@ -59,7 +59,7 @@
           </fieldset>
           <!-- 评论列表 -->
           <ul class="jieda">
-            <li class="jieda-daan" v-for="i in comment_list" :key="i._id">
+            <li class="jieda-daan" v-for="(i,index) in comment_list" :key="i._id">
               <div class="detail-about detail-about-reply">
                 <a class="fly-avatar" href="">
                   <img :src="$store.state.baseUrl+i.uid.avar" alt=" ">
@@ -80,7 +80,7 @@
                 <p>{{i.content}}</p>
               </div>
               <div class="jieda-reply">
-                <span class="jieda-zan zanok" type="zan">
+                <span class="jieda-zan zanok" @click="setGood(i._id)">
                   <i class="iconfont icon-zan"></i>
                   <em>{{i.good_count}}</em>
                 </span>
@@ -89,9 +89,9 @@
                   回复
                 </span>
                 <div class="jieda-admin">
-                  <span type="edit">编辑</span>
-                  <span type="del">删除</span>
-                  <span class="jieda-accept" type="accept">采纳</span>
+                  <!-- <span type="edit">编辑</span> -->
+                  <!-- <span type="del">删除</span> -->
+                  <span class="jieda-accept" v-show="i.isBest=='0' && i.tags!='2'" @click="setBest(i._id,index)">采纳</span>
                 </div>
               </div>
             </li>
@@ -125,8 +125,8 @@
 </template>
 
 <script>
-import { get_list_detail,add_comment,get_comments } from '@/service/articleService.js'
-import { parse_time } from '@/util.js'
+import { get_list_detail, add_comment, get_comments, set_best, set_good } from '@/service/articleService.js'
+import { parse_time, login_state } from '@/util.js'
 import Code from '@/mixin/code.js'
 import moment from 'moment'
 import jwt from 'jsonwebtoken'
@@ -172,6 +172,43 @@ export default {
           this.$alert('提交失败')
         }
       })
+    },
+    _getCommentsList(){
+      get_comments({
+        tid:this.tid,
+        page:this.page,
+        page_limit:this.page_limit
+      }).then(r => {
+        if(r.code == 200){
+          this.comment_list = r.data.result.map(x => {
+            x.create_time = parse_time(x.create_time)
+            return x
+          })
+          this.pageTotal = r.data.page_total*10
+        }
+      })
+    },
+    setGood(cid){
+      if(!login_state()){
+        this.$router.replace('/login')
+        return
+      }
+      set_good({cid:cid}).then(r => {
+        if(r.code == 200){
+          this._getCommentsList()
+        } else {
+          this.$alert(r.err_msg)
+        }
+      })
+    },
+    setBest(cid,index){
+      set_best({cid:cid}).then(r => {
+        if(r.code == 200){
+          this.comment_list[index].isBest = '1'
+        } else {
+          this.$alert(r.err_msg || '操作失败请再试')
+        }
+      })
     }
   },
   mounted(){
@@ -188,19 +225,7 @@ export default {
       }
     })
     //获取评论
-    get_comments({
-      tid:id,
-      page:this.page,
-      page_limit:this.page_limit
-    }).then(r => {
-      if(r.code == 200){
-        this.comment_list = r.data.result.map(x => {
-          x.create_time = parse_time(x.create_time)
-          return x
-        })
-        this.pageTotal = r.data.page_total*10
-      }
-    })
+    this._getCommentsList()
 
     //记录已看次数
   }
