@@ -54,4 +54,8 @@ export default {
     width:190px
   }
   .error{ color: red}
+  .page{
+    text-align: center;
+    padding-bottom: 50px
+  }
 </style>

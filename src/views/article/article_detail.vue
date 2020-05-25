@@ -41,8 +41,8 @@
             </div>
             <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
               <span style="padding-right: 10px; color: #FF7200">悬赏：{{detail_info.score}}飞吻</span>
-              <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a>编辑此贴</a></span>
-              <span class="layui-btn layui-btn-xs jie-admin" type="edit"><a>收藏此贴</a></span>
+              <span class="layui-btn layui-btn-xs jie-admin" @click="go_editPage" v-show="edit_btn"><a>编辑此贴</a></span>
+              <span class="layui-btn layui-btn-xs jie-admin" @click="collectPost"><a>{{isCollect=='0'?'收藏此贴':'取消收藏'}}</a></span>
             </div>
           </div>
           <div class="detail-body photos" v-html="detail_info.content">
@@ -84,10 +84,10 @@
                   <i class="iconfont icon-zan"></i>
                   <em>{{i.good_count}}</em>
                 </span>
-                <span type="reply">
+                <!-- <span type="reply">
                   <i class="iconfont icon-svgmoban53"></i>
                   回复
-                </span>
+                </span> -->
                 <div class="jieda-admin">
                   <!-- <span type="edit">编辑</span> -->
                   <!-- <span type="del">删除</span> -->
@@ -125,20 +125,22 @@
 </template>
 
 <script>
-import { get_list_detail, add_comment, get_comments, set_best, set_good } from '@/service/articleService.js'
-import { parse_time, login_state } from '@/util.js'
+import { get_list_detail, add_comment, get_comments, set_best, set_good, get_collectState, collect_post } from '@/service/articleService.js'
+import { parse_time, login_state, get_token } from '@/util.js'
 import Code from '@/mixin/code.js'
 import moment from 'moment'
-import jwt from 'jsonwebtoken'
 
 
 export default {
   mixins:[Code],
   data(){
     return {
+      isCollect:'0',
+      token:'',
       tid:'',
       uid:'',
       content:'',
+      edit_btn:true,
       page:0,
       page_limit:20,
       detail_info:{},
@@ -148,10 +150,20 @@ export default {
     }
   },
   methods:{
+    go_editPage(){
+      //判断是否登录 / 判断是否结帖
+      if(!login_state()){
+        this.$router.replace('/login')
+      } else if(this.detail_info.tags ==1){
+        this.$alert('已截贴，不可编辑')
+        return
+      }
+      this.$router.replace('/post_Edit?tid='+this.tid)
+    },
     async submit_commit(){
       //是否登录
       const token = localStorage.getItem('token')
-      if(token == undefined || !moment().isBefore(jwt.decode(token).exp*1000)){
+      if(token == undefined || !moment().isBefore(get_token(token).exp*1000)){
         this.$router.replace('/login')
         return
       }
@@ -162,14 +174,31 @@ export default {
       }
       //收集信息并提交
       add_comment({
-        uid:jwt.decode(token)._id,
+        uid:get_token(this.token)._id,
         tid:this.tid,
         content:this.content
       }).then(r => {
         if(r.code == 200){
+          this._getCommentsList()
+          this._getPostDetail()
+          this.content = ''
           this.$alert(r.data.result)
         } else {
           this.$alert('提交失败')
+        }
+      })
+    },
+    _getPostDetail(){
+      get_list_detail(this.tid).then(r => {
+        if(r.code == 200){
+          r.data.create_time = parse_time(r.data.create_time)
+          this.detail_info = r.data
+          this.detail_info_user = r.data.uid
+          if(this.token){
+            r.data.uid._id == get_token()._id?this.edit_btn=true:this.edit_btn=false
+          }
+        } else {
+          this.$alert('查询错误')
         }
       })
     },
@@ -209,32 +238,57 @@ export default {
           this.$alert(r.err_msg || '操作失败请再试')
         }
       })
+    },
+    collectPost(){
+      //是否登录
+      if(!login_state()){
+        this.$router.replace('/login')
+      }
+      //是否已收藏
+      if(this.isCollect==0){
+        collect_post({
+          tid:this.tid,
+          title:this.detail_info.title,
+          isCollect:'0'
+        }).then(r => {
+          if(r.code == 200){
+            this.isCollect = '1'
+          }
+        })
+      } else {
+        collect_post({
+          tid:this.tid,
+          title:this.detail_info.title,
+          isCollect:'1'
+        }).then(r => {
+          if(r.code == 200){
+            this.isCollect = '0'
+          }
+        })
+      }
     }
   },
   mounted(){
-    const id = this.tid = this.$router.currentRoute.query.id
-    this.uid = jwt.decode(localStorage.getItem('token'))._id
+    const token = this.token = localStorage.getItem('token')
+    this.tid = this.$router.currentRoute.query.id
+    //如果未登录
+    if(token){
+      this.uid = get_token(token)._id
+    }
     //获取文章详情
-    get_list_detail(id).then(r => {
-      if(r.code == 200){
-        r.data.create_time = parse_time(r.data.create_time)
-        this.detail_info = r.data
-        this.detail_info_user = r.data.uid
-      } else {
-        this.$alert('查询错误')
-      }
-    })
+    this._getPostDetail()
     //获取评论
     this._getCommentsList()
-
-    //记录已看次数
+    //登录状态-获取该用户收藏该文章的状态
+    if(login_state()){
+      get_collectState(get_token(token)._id).then(r => {
+        this.isCollect = r.data.isCollect
+      })
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.page{
-  text-align: center;
-  padding-bottom: 50px
-}
+
 </style>

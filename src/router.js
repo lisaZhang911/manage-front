@@ -17,6 +17,7 @@ const Personal_email = () => import(/* webpackChunkName: 'personal_email' */'./v
 const Personal_resetPwd = () => import(/* webpackChunkName: 'personal_resetPwd' */'./views/personal/person_resetPwd.vue')
 const Post_add = () => import(/* webpackChunkName: 'post_add' */'./views/article/post_add.vue')
 const Article_Detail = () => import(/* webpackChunkName:'article_detail' */'./views/article/article_detail.vue')
+const Article_Edit = () => import(/* webpackChunkName:'article_edit' */'./views/article/article_edit.vue')
 
 Vue.use(Router)
 
@@ -51,6 +52,10 @@ const route = new Router({
         },{
           path:'/post_Detail',
           component: Article_Detail
+        },{
+          path:'/post_Edit',
+          component: Article_Edit,
+          meta: { requiresAuth: true }
         },{
           path: '/ques',
           component: Ques

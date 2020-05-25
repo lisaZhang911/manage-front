@@ -39,9 +39,15 @@ const login_state = function(){
     return token != null && moment().isBefore(moment(jwt.decode(token).exp*1000))
 }
 
+const get_token = function(){
+  const token = localStorage.getItem('token')
+  return jwt.decode(token)
+}
+
 export {
   _logout,
   debounce,
   parse_time,
-  login_state
+  login_state,
+  get_token
 }

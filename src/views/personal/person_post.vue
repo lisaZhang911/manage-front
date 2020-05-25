@@ -8,7 +8,7 @@
           :key="index"
           :class="{'layui-this':currentIndex == index}"
           @click="changTag(index)">
-        {{i.name}}（<span>{{i.num}}</span>）
+        {{i.name}}
       </li>
       </ul>
       <!-- 内容 -->
@@ -27,11 +27,9 @@ export default {
       currentIndex:0,
       currentCompoName:'PostMine',
       tagList:[{
-        name:'我发布的帖子',
-        num:98
+        name:'我发布的帖子'
       },{
-        name:'我收藏的帖子',
-        num:7
+        name:'我收藏的帖子'
       }]
     }
   },
